@@ -1,0 +1,1655 @@
+<!doctype html>
+<html lang="en" data-visualize-standalone>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; style-src 'unsafe-inline' blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; img-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; font-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; media-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; worker-src blob:; connect-src blob: data:; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<title>Lumity Focus — Interactive Design Prototype</title>
+<style>:root {
+  color-scheme: light dark;
+  background-color: var(
+    --background,
+    var(--color-background-primary, light-dark(rgb(255 255 255), rgb(24 24 24)))
+  ) !important;
+
+  /* Agent-facing contract; keep in sync with SKILL.md. */
+  --background: var(
+    --color-background-primary,
+    light-dark(rgb(255 255 255), rgb(24 24 24))
+  );
+  --foreground: var(
+    --color-text-primary,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --card: color-mix(in oklab, var(--foreground) 5%, var(--background));
+  --card-foreground: var(
+    --color-text-primary,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --popover: var(
+    --color-background-secondary,
+    light-dark(rgb(255 255 255), rgb(45 45 45))
+  );
+  --popover-foreground: var(
+    --color-text-primary,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --primary: var(
+    --color-text-info,
+    light-dark(rgb(51 156 255), rgb(131 195 255))
+  );
+  --primary-foreground: var(
+    --color-text-inverse,
+    light-dark(rgb(255 255 255), rgb(13 13 13))
+  );
+  --secondary: var(
+    --color-background-secondary,
+    light-dark(rgb(255 255 255 / 96%), rgb(54 54 54 / 96%))
+  );
+  --secondary-foreground: var(
+    --color-text-primary,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --muted: color-mix(in srgb, var(--foreground) 10%, transparent);
+  --muted-foreground: var(
+    --color-text-secondary,
+    light-dark(rgb(26 28 31 / 49.4%), rgb(255 255 255 / 49.8%))
+  );
+  --accent: var(
+    --color-background-info,
+    light-dark(rgb(229 242 255), rgb(13 39 63))
+  );
+  --accent-foreground: var(
+    --color-text-info,
+    light-dark(rgb(51 156 255), rgb(131 195 255))
+  );
+  --destructive: var(
+    --color-text-warning,
+    light-dark(rgb(226 85 7), rgb(255 133 73))
+  );
+  --border: var(
+    --color-border-secondary,
+    light-dark(rgb(26 28 31 / 8%), rgb(255 255 255 / 8.2%))
+  );
+  --input: var(
+    --color-border-primary,
+    light-dark(
+      rgb(26 28 31 / 11.8%),
+      color-mix(in oklab, rgb(0 0 0) 10%, transparent)
+    )
+  );
+  --ring: var(
+    --color-ring-primary,
+    light-dark(rgb(51 156 255), rgb(131 195 255 / 76%))
+  );
+  --font-size-base: var(--font-text-md-size, 14px);
+  --blue: light-dark(rgb(51 156 255), rgb(51 156 255));
+  --orange: light-dark(rgb(226 85 7), rgb(251 106 34));
+  --green: light-dark(rgb(0 162 64), rgb(64 201 119));
+  --red: light-dark(rgb(224 46 42), rgb(255 103 100));
+  --purple: light-dark(rgb(146 79 247), rgb(173 123 249));
+  --yellow: light-dark(rgb(255 195 0), rgb(255 210 64));
+  --viz-series-1: var(--primary);
+  --viz-series-2: light-dark(rgb(243 136 59), rgb(245 154 86));
+  --viz-series-3: light-dark(rgb(93 201 119), rgb(116 213 139));
+  --viz-series-4: light-dark(rgb(235 119 177), rgb(240 143 192));
+  --viz-series-5: light-dark(rgb(155 121 236), rgb(170 145 239));
+  --viz-series-6: light-dark(rgb(58 185 177), rgb(90 203 194));
+
+  /* Internal implementation variables; not part of the agent contract. */
+  --font-sans: -apple-system, system-ui, "Segoe UI", sans-serif;
+  --font-mono:
+    ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono",
+    monospace;
+  --font-size-normal: max(11px, var(--font-size-base));
+  --font-size-tooltip: calc(var(--font-size-base) - 1px);
+  --font-size-small: max(11px, calc(var(--font-size-base) - 2px));
+  --font-size-h1: calc(var(--font-size-normal) * 1.7142857143);
+  --font-size-h2: calc(var(--font-size-normal) * 1.4285714286);
+  --font-size-h3: calc(var(--font-size-normal) * 1.2857142857);
+  --font-weight-normal: 430;
+  --font-weight-medium: 500;
+  --icon-size: 16px;
+  --line-height-normal: calc(var(--font-size-normal) * 1.5);
+  --line-height-tooltip: calc(var(--font-size-tooltip) * 1.4285714286);
+  --line-height-small: calc(var(--font-size-small) + 4px);
+  --corner-shape: round;
+  --radius: var(--border-radius-lg, 10px);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-2xl: calc(var(--radius) * 1.6);
+  --radius-full: 9999px;
+  --shadow-sm: 0 1px 2px -1px rgb(0 0 0 / 8%);
+  --checkmark-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 17 17'%3E%3Cpath d='M12.8961 3.64101C13.1297 3.41418 13.4984 3.37523 13.7779 3.56581C14.0571 3.75635 14.1554 4.11331 14.0299 4.41347L13.9615 4.53847L7.71151 13.7045C7.59411 13.8767 7.4063 13.9877 7.19881 14.0072C6.99136 14.0267 6.78564 13.9533 6.63826 13.806L2.88826 10.056L2.79842 9.9457C2.6192 9.67407 2.64927 9.30496 2.88826 9.06581C3.12738 8.82669 3.49647 8.79676 3.76815 8.97597L3.8785 9.06581L7.03084 12.2182L12.8053 3.74941L12.8961 3.64101Z'/%3E%3C/svg%3E");
+
+  /* Legacy aliases; not part of the current agent contract. */
+  --viz-bg: transparent;
+  --viz-panel: var(--card);
+  --viz-border: var(--border);
+  --viz-text: var(--foreground);
+  --viz-muted: var(--muted-foreground);
+  --viz-accent: var(--primary);
+  --viz-accent-text: var(--primary-foreground);
+  --viz-accent-bg: var(--accent);
+  --viz-font-size: var(--font-size-base);
+  --viz-warning: var(--destructive);
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html > body {
+  /* Preserve MCP aliases for older inline renderers without creating :root cycles. */
+  --color-background-primary: var(
+    --background,
+    light-dark(rgb(255 255 255), rgb(24 24 24))
+  );
+  --color-text-primary: var(
+    --foreground,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --color-border-secondary: var(
+    --border,
+    light-dark(rgb(26 28 31 / 8%), rgb(255 255 255 / 8.2%))
+  );
+
+  margin: 0;
+  padding: var(--visualize-paint-gutter, 0px);
+  color: var(--foreground);
+  background: transparent !important;
+  font-family: var(--font-sans) !important;
+  font-size: var(--font-size-normal);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-normal);
+}
+
+a {
+  color: color-mix(in srgb, var(--viz-accent) 80%, var(--viz-text) 20%);
+  cursor: pointer;
+  font-weight: var(--font-weight-medium, 500);
+  text-decoration: none;
+  text-underline-offset: 2px;
+}
+
+a:is(:hover, :focus-visible) {
+  text-decoration-line: underline;
+  text-decoration-style: dashed;
+  text-decoration-thickness: 0.5px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin-block: 0;
+}
+
+h1 {
+  font-size: var(--font-size-h1);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+h2 {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+h3,
+h4,
+h5,
+h6 {
+  font-size: var(--font-size-h3);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.3;
+}
+
+b,
+strong,
+th {
+  font-weight: var(--font-weight-medium);
+}
+
+code:not(pre code) {
+  display: inline;
+  padding: 1px 6px;
+  border-radius: var(--radius-sm);
+  corner-shape: var(--corner-shape);
+  background: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+  overflow-wrap: anywhere;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  word-break: break-word;
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  color: var(--foreground);
+  font: inherit;
+  text-align: start;
+}
+
+.table :is(th, td) {
+  padding-block: 10px;
+  padding-inline: 0 24px;
+  overflow-wrap: anywhere;
+  border-bottom: 1px solid var(--border);
+  text-align: start;
+  vertical-align: top;
+}
+
+.table-responsive > .table :is(th, td) {
+  overflow-wrap: break-word;
+}
+
+.table :is(th, td):last-child {
+  padding-inline-end: 0;
+}
+
+.table :is(caption, thead th) {
+  font-weight: 600;
+}
+
+.table thead th {
+  padding-block: 8px;
+  border-bottom-color: color-mix(in srgb, var(--foreground) 16%, transparent);
+}
+
+.table tbody tr:last-child :is(th, td) {
+  border-bottom: 0;
+}
+
+.table.table-sm :is(th, td) {
+  padding-block: 6px;
+}
+
+.table.table-sm :is(th, td):not(:last-child) {
+  padding-inline-end: 16px;
+}
+
+.table :is(.text-end, [align="right"]) {
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+}
+
+.table :is(.text-center, [align="center"]) {
+  text-align: center;
+}
+
+.table .text-nowrap {
+  white-space: nowrap;
+}
+
+#widget {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  padding: 0;
+  background: transparent !important;
+}
+
+.card {
+  min-width: 0;
+  padding: 12px;
+  overflow: hidden;
+  overflow-wrap: break-word;
+  border-radius: var(--radius-2xl);
+  corner-shape: var(--corner-shape);
+  color: var(--card-foreground);
+  background: var(--card);
+}
+
+#widget > :not(.card, .progress) {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.tooltip {
+  position: fixed;
+  z-index: 50;
+  top: 0;
+  left: 0;
+  width: max-content;
+  max-width: min(
+    20rem,
+    var(--tooltip-available-width, calc(100vw - 10px)),
+    calc(100vw - 10px)
+  );
+  max-height: min(
+    var(--tooltip-available-height, calc(100vh - 10px)),
+    calc(100vh - 10px)
+  );
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  corner-shape: var(--corner-shape);
+  color: var(--popover-foreground);
+  background: var(--popover);
+  box-shadow: none;
+  font-size: var(--font-size-tooltip);
+  line-height: var(--line-height-tooltip);
+  overflow-wrap: break-word;
+  white-space: normal;
+  pointer-events: none;
+  user-select: none;
+}
+
+.viz-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(max(180px, 24%), 1fr));
+  gap: 10px;
+}
+
+.viz-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.viz-stat-value {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+.viz-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+hr {
+  width: 100%;
+  height: 1px;
+  margin-block: 6px;
+  border: 0;
+  background: var(--border);
+}
+
+.nav {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 4px;
+}
+
+.progress {
+  display: flex;
+  height: 8px;
+  margin-block: calc((var(--line-height-normal, 1.5em) - 8px) / 2);
+  overflow: hidden;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--muted);
+}
+
+.progress-bar:only-child {
+  border-radius: var(--radius-full);
+}
+
+.progress-bar {
+  height: 100%;
+  flex-shrink: 0;
+  border: 0;
+  background: var(--viz-series-1);
+}
+
+.viz-badge {
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  color: var(--accent-foreground);
+  background: var(--accent);
+  font-weight: var(--font-weight-medium);
+}
+
+small,
+.text-small,
+.viz-badge {
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+}
+
+.text-muted {
+  color: var(--muted-foreground);
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.viz-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.viz-controls > .form-label {
+  display: grid;
+  min-width: min(100%, 260px);
+  flex: 1 1 280px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 2px 12px;
+  margin-bottom: 0;
+}
+
+.viz-controls > .form-label > :is(.form-control, .form-range, .form-select) {
+  grid-column: 1 / -1;
+}
+
+.btn,
+.nav-link,
+.form-check-input,
+.form-control,
+.form-range,
+.form-select {
+  font: inherit;
+}
+
+.btn,
+.nav-link {
+  appearance: button;
+  display: inline-flex;
+  inline-size: fit-content;
+  max-inline-size: 100%;
+  min-height: 28px;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin: 0;
+  padding: 0 8px;
+  -webkit-app-region: no-drag;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: var(--corner-shape);
+  color: var(--secondary-foreground);
+  background: var(--secondary);
+  cursor: var(--cursor-interaction, pointer);
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+.btn:is(.btn-block, .viz-tile) {
+  inline-size: 100%;
+}
+
+.btn.viz-tile {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+a.btn {
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btn:not(:disabled):hover,
+.nav-link:not(:disabled):not([aria-disabled="true"]):hover {
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.btn-primary {
+  border-color: transparent;
+  color: var(--primary-foreground);
+  background: var(--foreground);
+  background-clip: padding-box;
+}
+
+.btn-primary .text-muted {
+  color: color-mix(in srgb, var(--primary-foreground) 50%, transparent);
+}
+
+.btn-primary:not(:disabled):hover {
+  background: color-mix(in srgb, var(--foreground) 80%, transparent);
+  background-clip: padding-box;
+}
+
+.btn-ghost {
+  border-color: transparent;
+  color: var(--muted-foreground);
+  background: transparent;
+}
+
+.btn-ghost:not(:disabled):hover {
+  color: var(--foreground);
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.nav-pills .nav-link {
+  min-width: 0;
+  border-color: transparent;
+  color: var(--muted-foreground);
+  background: transparent;
+}
+
+.nav-justified .nav-link {
+  flex: 1 1 0;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+.nav-pills .nav-link.active {
+  color: var(--foreground);
+  background: var(--muted);
+}
+
+.btn:disabled,
+.nav-link:disabled,
+.nav-link[aria-disabled="true"] {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+[data-lucide] {
+  stroke-width: 1.6;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--foreground);
+}
+
+.form-control {
+  display: block;
+  width: 100%;
+  min-height: 28px;
+  padding: 0 8px;
+  outline: none;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: var(--corner-shape);
+  color: var(--foreground);
+  background: var(--secondary);
+}
+
+.form-control::placeholder {
+  color: var(--muted-foreground);
+}
+
+.form-control[type="file"] {
+  padding: 0;
+  overflow: hidden;
+  cursor: var(--cursor-interaction, pointer);
+}
+
+.form-control[type="file"]::file-selector-button {
+  min-height: 26px;
+  margin-right: 8px;
+  padding: 0 8px;
+  border: 0;
+  border-right: 1px solid var(--input);
+  color: var(--secondary-foreground);
+  background: var(--secondary);
+  cursor: inherit;
+  font: inherit;
+}
+
+.form-control[type="file"]:not(:disabled):hover::file-selector-button {
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.form-control-color[type="color"] {
+  width: 40px;
+  height: 28px;
+  padding: 3px;
+  cursor: var(--cursor-interaction, pointer);
+}
+
+.form-control-color[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.form-control-color[type="color"]::-webkit-color-swatch {
+  border: 0;
+  border-radius: calc(var(--radius-lg) - 4px);
+  corner-shape: var(--corner-shape);
+}
+
+textarea.form-control {
+  height: auto;
+  min-height: 72px;
+  padding: 8px 10px;
+  resize: vertical;
+}
+
+.form-control:focus-visible {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-control:disabled,
+.form-select:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.form-select {
+  appearance: none;
+  display: block;
+  width: 100%;
+  min-height: 28px;
+  margin: 0;
+  padding: 0 32px 0 8px;
+  outline: none;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: var(--corner-shape);
+  color: var(--foreground);
+  background-color: var(--secondary);
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--muted-foreground) 50%),
+    linear-gradient(135deg, var(--muted-foreground) 50%, transparent 50%);
+  background-position:
+    calc(100% - 14px) 50%,
+    calc(100% - 10px) 50%;
+  background-repeat: no-repeat;
+  background-size: 4px 4px;
+  cursor: var(--cursor-interaction, default);
+}
+
+.form-select:not(:disabled):hover {
+  background-color: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.form-select:focus-visible {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-check {
+  display: flex;
+  min-height: 20px;
+  align-items: center;
+  gap: 6px;
+}
+
+.form-check-input {
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
+  margin: 0;
+  border: 1px solid var(--input);
+  color: var(--primary-foreground);
+  background-color: transparent;
+  cursor: var(--cursor-interaction, default);
+  transition:
+    background-color 150ms,
+    border-color 150ms,
+    box-shadow 150ms;
+}
+
+.form-check:not(.form-switch) .form-check-input[type="checkbox"] {
+  border-color: var(--input);
+  border-radius: var(--radius-sm);
+  corner-shape: var(--corner-shape);
+  background-color: var(--secondary);
+  box-shadow: var(--shadow-sm);
+}
+
+.form-check:not(.form-switch)
+  .form-check-input:not(:disabled):not(:checked):hover {
+  background-color: var(--card);
+}
+
+.form-check:not(.form-switch) .form-check-input[type="checkbox"]:checked {
+  border-color: var(--primary);
+  background-color: var(--primary);
+}
+
+.form-check:not(.form-switch)
+  .form-check-input[type="checkbox"]:checked::before {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--primary-foreground);
+  content: "";
+  mask: var(--checkmark-image) center / 12px 12px no-repeat;
+}
+
+.form-check-input[type="radio"] {
+  width: 14px;
+  height: 14px;
+  border-radius: var(--radius-full);
+}
+
+.form-check-input[type="radio"]:checked {
+  border: 2px solid var(--primary);
+  background:
+    radial-gradient(circle, var(--primary-foreground) 0 2.5px, transparent 3px),
+    var(--primary);
+}
+
+.form-check:not(.form-switch) .form-check-input:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.form-check:not(.form-switch) .form-check-input:disabled {
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.form-check:not(.form-switch) .form-check-input:disabled + .form-check-label {
+  cursor: not-allowed;
+}
+
+.form-switch .form-check-input:disabled,
+.form-switch .form-check-input:disabled + .form-check-label {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.form-check-label {
+  color: var(--foreground);
+  cursor: var(--cursor-interaction, default);
+}
+
+.form-switch .form-check-input {
+  position: relative;
+  width: 32px;
+  height: 20px;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--muted);
+  box-shadow: none;
+  transition: background-color 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.form-switch .form-check-input::before {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 16px;
+  height: 16px;
+  box-sizing: border-box;
+  border: 1px solid light-dark(var(--primary-foreground), var(--foreground));
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+  box-shadow: var(--shadow-sm);
+  content: "";
+  transform: translate(2px, -50%);
+  transition: transform 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.form-switch .form-check-input:checked {
+  background: var(--primary);
+}
+
+.form-switch .form-check-input:checked::before {
+  transform: translate(14px, -50%);
+}
+
+.form-switch .form-check-input:focus-visible {
+  box-shadow: 0 0 0 2px var(--ring);
+}
+
+.form-range {
+  appearance: none;
+  display: block;
+  width: 100%;
+  height: 28px;
+  flex: 1;
+  margin: 0;
+  padding: 0;
+  outline: none;
+  border: 0;
+  accent-color: var(--primary);
+  background: linear-gradient(
+      color-mix(in srgb, var(--foreground) 7%, transparent),
+      color-mix(in srgb, var(--foreground) 7%, transparent)
+    )
+    center / 100% 2px no-repeat;
+}
+
+.form-range::-webkit-slider-runnable-track {
+  height: 28px;
+  background: transparent;
+}
+
+.form-range::-webkit-slider-thumb {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  margin-top: 4px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+}
+
+.form-range:focus-visible::-webkit-slider-thumb {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-range::-moz-range-track {
+  height: 28px;
+  background: transparent;
+}
+
+.form-range::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+}
+
+.form-range:focus-visible::-moz-range-thumb {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-range:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.btn:not(.btn-primary, .viz-tile):is(
+  [aria-pressed="true"],
+  [aria-selected="true"],
+  .is-selected
+) {
+  border-color: var(--primary);
+  color: var(--primary-foreground);
+  background: var(--primary);
+}
+
+.btn.viz-tile:is([aria-pressed="true"], [aria-selected="true"], .is-selected) {
+  border-color: var(--primary);
+  box-shadow: inset 0 0 0 1px var(--primary);
+}
+
+.btn:focus-visible,
+.nav-link:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+@media (pointer: coarse) {
+  .btn,
+  .nav-link,
+  .form-control,
+  .form-select {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  /* Keep small-screen WebKit from zooming when a text field receives focus. */
+  .form-control,
+  .form-select {
+    font-size: max(16px, var(--font-size-normal));
+  }
+
+  .form-control[type="file"]::file-selector-button {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .form-control-color[type="color"] {
+    width: 44px;
+    height: 44px;
+  }
+
+  .form-control:is(
+    [type="date"],
+    [type="datetime-local"],
+    [type="month"],
+    [type="time"],
+    [type="week"]
+  ) {
+    min-width: 0;
+    max-width: 100%;
+    padding-block: 8px;
+  }
+
+  .form-check {
+    min-height: 44px;
+    padding-inline: 15px;
+  }
+
+  .form-check-input {
+    position: relative;
+  }
+
+  .form-check-input::after {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 44px;
+    height: 44px;
+    content: "";
+    transform: translate(-50%, -50%);
+  }
+
+  .form-check-label {
+    display: inline-flex;
+    min-width: 44px;
+    min-height: 44px;
+    align-items: center;
+  }
+
+  .form-range {
+    height: 44px;
+    touch-action: pan-y;
+  }
+
+  .form-range::-webkit-slider-runnable-track {
+    height: 44px;
+  }
+
+  .form-range::-moz-range-track {
+    height: 44px;
+  }
+
+  .form-range::-webkit-slider-thumb {
+    margin-top: 12px;
+  }
+}
+
+svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+#widget > svg {
+  width: 100%;
+}
+
+/* Model-authored chart rules can otherwise stretch icons after these styles load. */
+svg.lucide {
+  display: block;
+  width: var(--icon-size) !important;
+  height: var(--icon-size) !important;
+  flex: none;
+  margin: 0 !important;
+  stroke-width: 1.6;
+}
+
+.text-warning,
+.text-destructive {
+  color: var(--destructive);
+}
+
+html>body{padding:0}</style>
+</head>
+<body>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Source+Serif+4:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<div id="focus-four" data-appearance="light" aria-label="Lumity Focus light-first design">
+  <div class="preview-controls"><label>Screen <select id="preview-screen"><option value="read">Passage</option><option value="reset">Reset instructions</option><option value="movement">Movement instructions</option><option value="choose">Choose a direction</option><option value="shield">Blocked app</option><option value="home">Home & limits</option><option value="welcome">Welcome</option><option value="permission">Screen Time access</option><option value="apps">Choose apps</option><option value="journal">Saved reflections</option></select></label><label>App <select id="preview-app"><option>Instagram</option><option>TikTok</option><option>X</option><option>YouTube</option></select></label></div>
+  <div class="f-phone">
+    <div class="f-status"><span>9:41</span><span aria-label="Signal and battery">●●● &nbsp; ▰</span></div>
+    <header><button class="f-brand" data-action="home" aria-label="Lumity Focus settings">Lumity <span>Focus</span></button><button class="f-icon" id="appearance" aria-label="Switch to dark appearance"><i data-lucide="moon" aria-hidden="true"></i></button></header>
+    <main id="f-view"></main>
+    <div class="f-home-indicator"></div>
+  </div>
+  <div class="preview-footer"><p id="preview-result" role="status">Design preview · Sample daily counts · No apps are actually blocked</p><button id="preview-next" hidden>Try another opening</button></div>
+</div>
+<style>
+#focus-four{--f-paper:#fff;--f-surface:#fafbff;--f-tint:#f1f4fe;--f-ink:#18191e;--f-secondary:#4a525c;--f-muted:#687383;--f-rule:#e4eafb;--f-border:#cdd5ee;--f-navy:#1a2149;--f-gradient:linear-gradient(145deg,#1a2149 0%,#24337f 58%,#312e81 100%);--f-accent:#4338ca;--f-on-primary:#fff;--f-shadow:0 14px 48px #1a21490b;--f-font:'Inter',-apple-system,system-ui,sans-serif;--f-serif:'Source Serif 4',Georgia,serif;color:var(--f-ink);font-family:var(--f-font);font-size:14px;line-height:1.5}
+#focus-four[data-appearance=dark]{--f-paper:#111829;--f-surface:#1a2149;--f-tint:#1e2a5a;--f-ink:#eef0ff;--f-secondary:#bcc5e8;--f-muted:#a6b1d8;--f-rule:#263461;--f-border:#384a8f;--f-navy:#eef0ff;--f-accent:#c7d2fe;--f-shadow:none}
+#focus-four *{box-sizing:border-box}#focus-four [hidden]{display:none!important}#focus-four button,#focus-four input,#focus-four select,#focus-four textarea{font:inherit}#focus-four button{cursor:pointer;color:inherit}#focus-four button:disabled{cursor:default;opacity:.45}#focus-four .preview-controls{display:flex;justify-content:center;flex-wrap:wrap;gap:14px;margin:0 auto 18px;color:light-dark(#4a525c,#bcc5e8);font-size:12px}#focus-four .preview-controls label{display:flex;align-items:center;gap:7px}#focus-four select{border:1px solid var(--f-border);background:var(--f-paper);color:var(--f-ink);border-radius:8px;padding:9px;max-width:100%}#focus-four .f-phone{max-width:410px;margin:auto;background:var(--f-paper);border:1px solid var(--f-border);border-radius:30px;overflow:hidden;box-shadow:var(--f-shadow)}#focus-four .f-status{display:flex;justify-content:space-between;padding:17px 28px 7px;font-size:12px;font-weight:500}#focus-four header{display:flex;justify-content:space-between;align-items:center;padding:19px 28px 23px}#focus-four .f-brand{padding:0;border:0;background:transparent;font-size:17px;font-weight:500;letter-spacing:-.5px;min-height:38px}#focus-four .f-brand span{font-weight:400;color:var(--f-secondary);margin-left:4px}#focus-four .f-icon{display:grid;place-items:center;width:40px;height:40px;border:0;background:transparent;border-radius:50%;color:var(--f-secondary)}#focus-four .f-icon:hover{background:var(--f-tint)}#focus-four main{min-height:525px;padding:0 28px 17px;display:flex;flex-direction:column}#focus-four h1,#focus-four h2,#focus-four h3,#focus-four p{margin:0}#focus-four h1{font-family:var(--f-serif);font-size:34px;line-height:1.12;letter-spacing:-1.05px;font-weight:400;text-wrap:balance}#focus-four h2{font-family:var(--f-font);font-size:26px;line-height:1.2;letter-spacing:-.85px;font-weight:500;text-wrap:balance}#focus-four h3{font-size:16px;font-weight:500}#focus-four .f-sub{color:var(--f-secondary);margin-top:13px;line-height:1.6}#focus-four .f-kicker{color:var(--f-muted);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;font-weight:500}#focus-four .f-context{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 0 13px;border-bottom:1px solid var(--f-rule);margin-bottom:26px;font-size:12px}#focus-four .f-app{display:flex;align-items:center;gap:8px;font-weight:500}#focus-four .f-count{color:var(--f-secondary);font-size:11px;text-align:right}#focus-four .f-meta{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:17px}#focus-four .f-meta span:last-child{font-size:11px;color:var(--f-muted)}#focus-four .f-edition{font-size:12px;color:var(--f-secondary);margin-top:10px}#focus-four .f-edition a{color:inherit;text-decoration-color:var(--f-border);text-underline-offset:4px}#focus-four .f-passages{margin:26px 0 0;padding:0;max-width:100%}#focus-four .f-passages p{font-family:var(--f-serif);font-size:21px;line-height:1.55;letter-spacing:-.25px;margin-bottom:18px;font-weight:400}#focus-four .f-divider{height:1px;background:var(--f-rule);width:36px;margin:23px 0}#focus-four .f-credit{font-size:12px;color:var(--f-secondary);display:flex;align-items:center;gap:9px;margin-top:23px}#focus-four .f-credit span{display:block}#focus-four .f-optional{border-top:1px solid var(--f-rule);border-bottom:1px solid var(--f-rule);padding:14px 0;margin:24px 0 15px}#focus-four summary{list-style:none;cursor:pointer;display:flex;gap:10px;align-items:center;font-size:12px;color:var(--f-secondary);min-height:24px}#focus-four summary::-webkit-details-marker{display:none}#focus-four summary span:last-child{margin-left:auto;color:var(--f-muted);font-size:11px}#focus-four .f-reflection{margin-top:17px}#focus-four .f-reflection label{display:block;margin-bottom:10px}#focus-four textarea{width:100%;min-height:100px;resize:vertical;padding:13px;border:1px solid var(--f-border);background:var(--f-surface);color:var(--f-ink);border-radius:10px;font-size:16px}#focus-four .f-primary,#focus-four .f-secondary{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;min-height:49px;padding:14px 12px;border-radius:11px;font-size:13px;font-weight:500}#focus-four .f-primary{background:var(--f-gradient);border:1px solid #253472;color:var(--f-on-primary)}#focus-four .f-secondary{border:1px solid var(--f-border);background:transparent}#focus-four .f-text-button{background:transparent;border:0;display:flex;align-items:center;justify-content:center;width:100%;gap:8px;padding:15px 4px;min-height:46px;color:var(--f-secondary);font-size:12px}#focus-four .f-grow{flex:1;min-height:20px}#focus-four .f-session-note{font-size:11px;text-align:center;color:var(--f-muted);margin:0 0 12px}#focus-four .f-actions{margin-top:4px}#focus-four .f-category-list{margin:23px 0 0}#focus-four .f-category-row{width:100%;display:flex;align-items:center;gap:14px;text-align:left;background:transparent;border:0;border-bottom:1px solid var(--f-rule);padding:15px 0;min-height:65px}#focus-four .f-category-row .f-category-icon{color:var(--f-accent);width:28px;display:flex;justify-content:flex-start}#focus-four .f-category-row .f-category-label{flex:1;font-size:15px;font-weight:500}#focus-four .f-category-row .f-category-label small{display:block;color:var(--f-muted);font-size:11px;font-weight:400;margin-top:3px}#focus-four .f-category-row:hover .f-category-label{color:var(--f-accent)}#focus-four .f-category-row>svg:last-child{color:var(--f-muted)}#focus-four .f-section-label{margin:24px 0 2px}#focus-four .f-surprise{margin-top:23px}#focus-four .f-allowance{margin:24px 0 28px;padding:23px 0;border-top:1px solid var(--f-rule);border-bottom:1px solid var(--f-rule)}#focus-four .f-allowance-top{display:flex;align-items:baseline;justify-content:space-between;gap:10px}#focus-four .f-allowance-top strong{font-size:30px;font-weight:400;font-family:var(--f-serif);letter-spacing:-1px}#focus-four .f-allowance-top span{font-size:12px;color:var(--f-secondary)}#focus-four .f-allowance p{margin-top:10px;font-size:12px;color:var(--f-secondary)}#focus-four .f-track{height:4px;border-radius:3px;background:var(--f-tint);margin-top:17px;overflow:hidden}#focus-four .f-track span{display:block;height:100%;background:var(--f-gradient)}#focus-four .f-settings-block{margin-top:27px}#focus-four .f-setting{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:18px 0;border-bottom:1px solid var(--f-rule)}#focus-four .f-setting label{font-size:14px}#focus-four .f-setting small{display:block;font-size:11px;color:var(--f-muted);margin-top:5px}#focus-four .f-number{display:flex;align-items:center;gap:8px;color:var(--f-secondary);font-size:12px}#focus-four input[type=number]{width:62px;padding:9px 6px;text-align:center;border:1px solid var(--f-border);border-radius:8px;color:var(--f-ink);background:var(--f-paper);font-size:16px}#focus-four .f-help{font-size:11px;color:var(--f-muted);margin-top:14px;line-height:1.6}#focus-four .f-setting-link{display:flex;justify-content:space-between;align-items:center;width:100%;min-height:48px;background:transparent;border:0;padding:0;text-align:left;font-size:13px}#focus-four .f-app-row{padding:16px 0;border-bottom:1px solid var(--f-rule);display:flex;align-items:center;justify-content:space-between;gap:12px}#focus-four .f-app-row>span:last-child{font-size:11px;color:var(--f-secondary)}#focus-four .f-circle{display:grid;place-items:center;width:34px;height:34px;border-radius:10px;background:var(--f-tint);color:var(--f-accent)}#focus-four .f-search{width:100%;margin:25px 0 8px;padding:13px 14px;border:1px solid var(--f-border);background:var(--f-surface);color:var(--f-ink);border-radius:10px;font-size:16px}#focus-four input[type=checkbox]{width:18px;height:18px;accent-color:#24337f}#focus-four .f-intro-quote{margin:34px 0;padding:0 0 0 20px;border-left:2px solid var(--f-border);font-family:var(--f-serif);font-size:26px;line-height:1.45;color:var(--f-navy)}#focus-four .f-empty{padding:30px 0;color:var(--f-secondary)}#focus-four .f-journal{padding:22px 0;border-bottom:1px solid var(--f-rule)}#focus-four .f-journal>p{margin-top:13px;white-space:pre-wrap;overflow-wrap:anywhere}#focus-four .f-journal details{margin-top:15px}#focus-four .f-error{color:#b42318;font-size:12px;margin-top:10px}#focus-four[data-appearance=dark] .f-error{color:#ffb5ad}#focus-four .f-home-indicator{width:108px;height:4px;border-radius:9px;background:var(--f-ink);opacity:.7;margin:10px auto 12px}#focus-four .preview-footer{max-width:430px;margin:15px auto 0;text-align:center;color:light-dark(#4a525c,#bcc5e8);font-size:11px;line-height:1.6}#focus-four .preview-footer button{border:0;background:transparent;color:inherit;text-decoration:underline;padding:10px;font-size:12px}
+#focus-four.is-embed .preview-controls,#focus-four.is-embed .preview-footer{display:none}
+#focus-four.is-embed .f-phone{box-shadow:none;margin:0 auto}
+@media(max-width:360px){#focus-four header{padding-inline:21px}#focus-four main{padding-inline:21px}#focus-four .preview-controls{gap:8px;font-size:11px}#focus-four .f-count{max-width:140px}}
+/* Shared typography roles. Reading size does not change by paragraph or length. */
+#focus-four {
+  --f-type-title: 26px;
+  --f-type-reading: 21px;
+  --f-type-body: 15px;
+  --f-type-label: 15px;
+  --f-type-meta: 12px;
+  --f-line-title: 1.25;
+  --f-line-reading: 1.6;
+  --f-line-body: 1.6;
+  --f-action-fill: var(--f-gradient);
+  --f-action-border: #253472;
+  --f-action-ink: #ffffff;
+  font-weight: 400;
+  font-size: var(--f-type-body);
+  line-height: var(--f-line-body);
+}
+#focus-four[data-appearance=dark] {
+  --f-action-fill: linear-gradient(145deg, #faf7ff 0%, #d8d3ff 52%, #aebeff 100%);
+  --f-action-border: #d8d3ff;
+  --f-action-ink: #0e1321;
+}
+#focus-four h1,
+#focus-four h2 {
+  font-family: var(--f-font);
+  font-size: var(--f-type-title);
+  line-height: var(--f-line-title);
+  font-weight: 500;
+  letter-spacing: -.65px;
+}
+#focus-four h3 {
+  font-family: var(--f-font);
+  font-size: var(--f-type-label);
+  line-height: var(--f-line-body);
+  font-weight: 500;
+  letter-spacing: 0;
+}
+#focus-four .f-passages p,
+#focus-four .f-intro-quote {
+  font-family: var(--f-serif);
+  font-size: var(--f-type-reading);
+  font-weight: 400;
+  line-height: var(--f-line-reading);
+  letter-spacing: 0;
+  color: var(--f-ink);
+}
+#focus-four .f-passages p { margin-bottom: 20px; }
+#focus-four .f-passages p:last-child { margin-bottom: 0; }
+#focus-four .f-primary,
+#focus-four .f-secondary,
+#focus-four .f-text-button,
+#focus-four .f-setting-link,
+#focus-four .f-setting label,
+#focus-four .f-category-row .f-category-label {
+  font-size: var(--f-type-label);
+  line-height: 1.4;
+}
+#focus-four .f-primary {
+  background: var(--f-action-fill);
+  border-color: var(--f-action-border);
+  color: var(--f-action-ink);
+}
+#focus-four .f-track span { background: var(--f-action-fill); }
+#focus-four .f-meta span:last-child,
+#focus-four .f-kicker,
+#focus-four .f-edition,
+#focus-four .f-credit,
+#focus-four .f-help,
+#focus-four .f-count,
+#focus-four summary,
+#focus-four summary span:last-child,
+#focus-four .f-category-row .f-category-label small {
+  font-size: var(--f-type-meta);
+  line-height: 1.5;
+}
+#focus-four .f-kicker { letter-spacing: 1.2px; }
+#focus-four .f-count small { display: block; font-size: inherit; }
+#focus-four .f-sub { font-size: var(--f-type-body); line-height: var(--f-line-body); }
+#focus-four .f-steps { list-style: none; margin: 28px 0 0; padding: 0; }
+#focus-four .f-steps li { display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 14px; padding: 0 0 24px; }
+#focus-four .f-steps li:last-child { padding-bottom: 0; }
+#focus-four .f-step-number {
+  width: 28px; height: 28px; display: grid; place-items: center;
+  border-radius: 50%; background: var(--f-tint); color: var(--f-accent);
+  font-size: var(--f-type-meta); font-weight: 500; margin-top: 1px;
+}
+#focus-four .f-steps li p {
+  font-family: var(--f-font); font-size: var(--f-type-body);
+  line-height: var(--f-line-body); color: var(--f-secondary); margin-top: 6px;
+}
+#focus-four .f-practice-note {
+  display: flex; gap: 9px; align-items: center;
+  font-size: var(--f-type-meta); color: var(--f-muted); margin-top: 26px;
+}
+#focus-four .f-rule-list { margin: 24px 0; }
+#focus-four .f-rule-row {
+  display: flex; width: 100%; gap: 16px; align-items: center;
+  padding: 18px 0; border: 0; border-bottom: 1px solid var(--f-rule);
+  background: transparent; text-align: left;
+}
+#focus-four .f-rule-text { flex: 1; min-width: 0; }
+#focus-four .f-rule-title { display: block; font-size: var(--f-type-label); font-weight: 500; overflow-wrap: anywhere; }
+#focus-four .f-rule-detail,
+#focus-four .f-rule-members,
+#focus-four .f-rule-usage { display: block; font-size: var(--f-type-meta); line-height: 1.5; margin-top: 4px; color: var(--f-secondary); }
+#focus-four .f-rule-usage { color: var(--f-muted); }
+#focus-four .f-rule-row>svg { flex-shrink: 0; color: var(--f-muted); }
+#focus-four .f-back { border: 0; background: transparent; display: flex; align-items: center; gap: 8px; color: var(--f-secondary); margin: 0 0 20px; padding: 0; min-height: 38px; font-size: var(--f-type-meta); }
+#focus-four .f-segments { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; background: var(--f-tint); border-radius: 11px; padding: 4px; margin: 23px 0; }
+#focus-four .f-segments button { border: 1px solid transparent; background: transparent; border-radius: 8px; padding: 10px 8px; min-height: 44px; font-size: var(--f-type-label); color: var(--f-secondary); }
+#focus-four .f-segments button[aria-pressed=true] { background: var(--f-paper); border-color: var(--f-border); color: var(--f-ink); }
+#focus-four .f-field-label { display: block; font-size: var(--f-type-meta); color: var(--f-secondary); margin: 0 0 8px; }
+#focus-four .f-field { width: 100%; border: 1px solid var(--f-border); border-radius: 9px; background: var(--f-paper); color: var(--f-ink); padding: 12px; font-size: 16px; }
+#focus-four input[type=radio] { width: 18px; height: 18px; accent-color: var(--f-accent); }
+#focus-four .f-rule-row:focus-visible,
+#focus-four .f-category-row:focus-visible { outline-offset: 4px; }
+@media (prefers-reduced-motion: no-preference) {
+  #focus-four button { transition: background-color 120ms ease, border-color 120ms ease; }
+}
+
+</style>
+<script>
+(()=>{
+const root=document.getElementById('focus-four'),view=root.querySelector('#f-view'),screenPicker=root.querySelector('#preview-screen'),appPicker=root.querySelector('#preview-app'),result=root.querySelector('#preview-result'),next=root.querySelector('#preview-next');
+const sources={tao:'https://www.gutenberg.org/files/216/216-h/216-h.htm',epictetus:'https://classics.mit.edu/Epictetus/epicench.html',franklin:'https://www.gutenberg.org/files/148/148-h/148-h.htm',emerson:'https://www.gutenberg.org/cache/epub/2944/pg2944-images.html'};
+const library={
+Spiritual:[
+{id:'tao64',body:'The tree which fills the arms grew from the tiniest sprout; the tower of nine storeys rose from a (small) heap of earth; the journey of a thousand li commenced with a single step.',author:'Laozi',work:'Tao Te Ching · Chapter 64',edition:'James Legge translation',url:sources.tao,prompt:'What is one small beginning you have been putting off?'},
+{id:'tao33',body:'He who knows other men is discerning; he who knows himself is intelligent. He who overcomes others is strong; he who overcomes himself is mighty. He who is satisfied with his lot is rich; he who goes on acting with energy has a (firm) will.',author:'Laozi',work:'Tao Te Ching · Chapter 33',edition:'James Legge translation',url:sources.tao,prompt:'What have you learned about yourself recently?'}],
+Philosophical:[
+{id:'epictetus1',body:'Some things are in our control and others not. Things in our control are opinion, pursuit, desire, aversion, and, in a word, whatever are our own actions. Things not in our control are body, property, reputation, command, and, in one word, whatever are not our own actions.',author:'Epictetus',work:'The Enchiridion · Section 1',edition:'Internet Classics Archive text',url:sources.epictetus,prompt:'What is within your control today?'},
+{id:'epictetus1b',body:'Work, therefore to be able to say to every harsh appearance, “You are but an appearance, and not absolutely the thing you appear to be.” And then examine it by those rules which you have, and first, and chiefly, by this: whether it concerns the things which are in our own control, or those which are not; and, if it concerns anything not in our control, be prepared to say that it is nothing to you.',author:'Epictetus',work:'The Enchiridion · Section 1',edition:'Internet Classics Archive text',url:sources.epictetus,prompt:'Is there an assumption you could look at again?'}],
+Entrepreneur:[
+{id:'franklinhabit',body:'My intention being to acquire the habitude of all these virtues, I judg’d it would be well not to distract my attention by attempting the whole at once, but to fix it on one of them at a time; and, when I should be master of that, then to proceed to another, and so on, till I should have gone thro’ the thirteen;',author:'Benjamin Franklin',work:'The Autobiography · Excerpt',edition:'1909 edition',url:sources.franklin,prompt:'What would you choose to work on one at a time?'},
+{id:'franklinindustry',body:'Lose no time; be always employ’d in something useful; cut off all unnecessary actions.',author:'Benjamin Franklin',work:'The Autobiography · Industry',edition:'1909 edition',url:sources.franklin,prompt:'What would make today feel well spent to you?'}],
+Creative:[
+{id:'emersonlight',body:'A man should learn to detect and watch that gleam of light which flashes across his mind from within, more than the lustre of the firmament of bards and sages. Yet he dismisses without notice his thought, because it is his. In every work of genius we recognize our own rejected thoughts; they come back to us with a certain alienated majesty.',author:'Ralph Waldo Emerson',work:'Self-Reliance · Essays, First Series',edition:'1841',url:sources.emerson,prompt:'What idea of your own deserves another look?'},
+{id:'emersonthought',body:'To believe your own thought, to believe that what is true for you in your private heart is true for all men,—that is genius. Speak your latent conviction, and it shall be the universal sense;',author:'Ralph Waldo Emerson',work:'Self-Reliance · Excerpt',edition:'1841',url:sources.emerson,prompt:'What would you make if you trusted your own taste?'}],
+Reset:[
+{id:'resetbox',title:'Box breathing',body:'Box breathe: inhale 4, hold 4, exhale 4, hold 4. Repeat four times.',alternative:'Stop if uncomfortable; return to normal breathing.',author:'Lumity Focus',work:'Reset · 64 seconds',prompt:'What does this bring up for you?'},
+{id:'resetfive',title:'Five slow breaths',body:'Take five slow breaths.',alternative:'Let the exhale be slightly longer than the inhale.',author:'Lumity Focus',work:'Reset · 45 seconds',prompt:'What does this bring up for you?'}],
+Relationships:[
+{id:'relationshipcompliment',title:'Send someone a genuine compliment.',body:'Send someone a genuine compliment.',alternative:'Keep it specific.',author:'Lumity Focus',work:'Relationships · About 1 minute',prompt:'What does this bring up for you?'},
+{id:'relationshipthinking',title:'Text someone: “Thinking about you.”',body:'Text someone: “Thinking about you.”',alternative:'Edit the words so they sound like you.',author:'Lumity Focus',work:'Relationships · About 30 seconds',prompt:'What does this bring up for you?'}],
+Movement:[
+{id:'movementjumping',title:'Do 10 jumping jacks.',body:'Do 10 jumping jacks.',alternative:'Step one foot out at a time for a lower-impact version.',author:'Lumity Focus',work:'Movement · About 30 seconds',prompt:'What does this bring up for you?'},
+{id:'movementpushups',title:'Do 10 push-ups.',body:'Do 10 push-ups.',alternative:'Use a wall, desk, or knees if preferred.',author:'Lumity Focus',work:'Movement · About 45 seconds',prompt:'What does this bring up for you?'}]
+};
+
+const icons={Spiritual:'sun',Philosophical:'orbit',Entrepreneur:'hammer',Creative:'pen-tool',Reset:'wind',Relationships:'heart',Movement:'footprints'};
+const descriptions={Spiritual:'Wisdom & traditions',Philosophical:'Ideas & perspectives',Entrepreneur:'Work, craft & persistence',Creative:'Art & imagination',Reset:'Breath & grounding',Relationships:'Gratitude & connection',Movement:'Stretch & step outside'};
+const apps=['Instagram','TikTok','X','YouTube','Reddit'];
+const initialRules=[{id:'ig',name:'Instagram',apps:['Instagram'],minutes:10,daily:30},{id:'tt',name:'TikTok',apps:['TikTok'],minutes:5,daily:15},{id:'x',name:'X',apps:['X'],minutes:15,daily:45},{id:'yt',name:'YouTube',apps:['YouTube'],minutes:10,daily:30}];
+const state={page:'read',app:'Instagram',appearance:'light',rules:initialRules,selected:new Set(['Instagram','TikTok','X','YouTube']),category:'Spiritual',item:library.Spiritual[0],draft:'',saved:false,entries:[],bags:{Spiritual:[1]},last:{Spiritual:0},lastCategory:'Spiritual',day:localDay(),ledger:{Instagram:{opens:2,allocated:20}},sessions:{},exited:false,editor:null};
+const practices={
+resetbox:{duration:'About 1 minute',instruction:'Box breathe: inhale 4, hold 4, exhale 4, hold 4. Repeat four times.',alternative:'Stop if uncomfortable; return to normal breathing.'},
+resetfive:{duration:'About 45 seconds',instruction:'Take five slow breaths.',alternative:'Let the exhale be slightly longer than the inhale.'},
+relationshipcompliment:{duration:'About 1 minute',instruction:'Send someone a genuine compliment.',alternative:'Keep it specific.'},
+relationshipthinking:{duration:'About 30 seconds',instruction:'Text someone: “Thinking about you.”',alternative:'Edit the words so they sound like you.'},
+movementjumping:{duration:'About 30 seconds',instruction:'Do 10 jumping jacks.',alternative:'Step one foot out at a time for a lower-impact version.'},
+movementpushups:{duration:'About 45 seconds',instruction:'Do 10 push-ups.',alternative:'Use a wall, desk, or knees if preferred.'}
+};
+function localDay(){const d=new Date();return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;}
+function refreshDay(){if(state.day!==localDay()){state.day=localDay();state.ledger={};state.sessions={};}}
+function ruleFor(app=state.app){return state.rules.find(r=>r.apps.includes(app));}
+function allowance(app=state.app){refreshDay();const rule=ruleFor(app),log=state.ledger[app]||{opens:0,allocated:0};const allocated=rule?rule.apps.reduce((sum,a)=>sum+(state.ledger[a]?.allocated||0),0):0;return {...log,allocated,rule,remaining:rule?Math.max(0,rule.daily-allocated):0};}
+function grant(){const a=allowance();if(!a.rule||a.remaining<=0)return 0;const minutes=Math.min(a.rule.minutes,a.remaining),log=state.ledger[state.app]||{opens:0,allocated:0};state.ledger[state.app]={opens:log.opens+1,allocated:log.allocated+minutes};state.sessions[state.app]=Date.now()+minutes*60000;return minutes;}
+function beginEditor(id=null){const r=state.rules.find(r=>r.id===id);state.editor={id:r?.id||null,mode:r&&r.apps.length>1?'group':'app',name:r?.name||'Social',apps:[...(r?.apps||[])],minutes:r?.minutes||10,daily:r?.daily||30};state.page='editor';state.exited=false;render();}
+function saveRule(){const e=state.editor;if(!e||!e.apps.length||!Number.isInteger(e.minutes)||!Number.isInteger(e.daily)||e.minutes<1||e.daily<1||e.minutes>1440||e.daily>1440||e.mode==='group'&&(e.apps.length<2||!e.name.trim()))return false;
+const old=state.rules.find(r=>r.id===e.id),id=e.id||'rule-'+Date.now();
+// Keep app-level usage when regrouping. Removed group members retain an individual limit.
+const detached=old?old.apps.filter(a=>!e.apps.includes(a)).map((a,i)=>({id:id+'-detached-'+i,name:a,apps:[a],minutes:old.minutes,daily:old.daily})):[];
+state.rules=state.rules.filter(r=>r.id!==e.id).map(r=>({...r,apps:r.apps.filter(a=>!e.apps.includes(a))})).filter(r=>r.apps.length).map(r=>({...r,name:r.apps.length===1?r.apps[0]:r.name}));
+state.rules.push(...detached,{id,name:e.mode==='app'?e.apps[0]:e.name.trim(),apps:[...e.apps],minutes:e.minutes,daily:e.daily});state.selected=new Set(state.rules.flatMap(r=>r.apps));state.editor=null;state.page='home';return true;}
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const icon=n=>`<i data-lucide="${n}" aria-hidden="true"></i>`;
+const button=(label,action,kind='primary',disabled=false)=>`<button class="f-${kind}" data-action="${action}" ${disabled?'disabled':''}>${label}</button>`;
+const context=()=>{const a=allowance();return `<div class="f-context"><span class="f-app">${icon('lock-keyhole')}${esc(state.app)}</span><span class="f-count">${a.opens} ${a.opens===1?'open':'opens'} today${a.rule?.apps.length>1?`<small>${a.remaining} min left in ${esc(a.rule.name)}</small>`:` · ${a.rule?Math.ceil(a.remaining/a.rule.minutes):0} remaining`}</span></div>`;};
+function paragraphs(item){
+if(item.id==='tao64')return ['The tree which fills the arms\ngrew from the tiniest sprout;','the tower of nine storeys\nrose from a (small) heap of earth;','the journey of a thousand li\ncommenced with a single step.'];
+if(item.id==='tao33')return ['He who knows other men is discerning; he who knows himself is intelligent.','He who overcomes others is strong; he who overcomes himself is mighty.','He who is satisfied with his lot is rich; he who goes on acting with energy has a (firm) will.'];
+if(item.id==='franklinhabit')return ['My intention being to acquire the habitude of all these virtues, I judg’d it would be well not to distract my attention by attempting the whole at once,','but to fix it on one of them at a time;','and, when I should be master of that, then to proceed to another, and so on, till I should have gone thro’ the thirteen;'];
+if(item.id==='epictetus1b')return ['Work, therefore to be able to say to every harsh appearance, “You are but an appearance, and not absolutely the thing you appear to be.”','And then examine it by those rules which you have, and first, and chiefly, by this: whether it concerns the things which are in our own control, or those which are not;','and, if it concerns anything not in our control, be prepared to say that it is nothing to you.'];
+return item.body.match(/[^.!?]+(?:[.!?][”"]?|$)/g)?.map(p=>p.trim()).filter(Boolean)||[item.body];
+}
+function passage(item){return `<div class="f-passages">${paragraphs(item).map(p=>`<p>${esc(p).replace(/\n/g,'<br>')}</p>`).join('')}</div>`;}
+function practice(item,category=state.category){const p=practices[item.id];return `<article class="f-practice"><div class="f-meta"><span class="f-kicker">${category}</span><span>${p.duration}</span></div><h1>${esc(p.instruction)}</h1>${p.alternative?`<p class="f-practice-note"><strong>Alternative:</strong> ${esc(p.alternative)}</p>`:''}</article>`;}
+function render(){
+refreshDay();root.dataset.appearance=state.appearance;screenPicker.value=state.page==='editor'?'home':state.page==='read'&&state.category==='Reset'?'reset':state.page==='read'&&state.category==='Movement'?'movement':state.page;appPicker.value=state.app;const a=allowance();
+root.querySelector('#appearance').innerHTML=icon(state.appearance==='light'?'moon':'sun');root.querySelector('#appearance').setAttribute('aria-label',`Switch to ${state.appearance==='light'?'dark':'light'} appearance`);
+if(!state.exited){result.textContent='Design preview · Sample daily counts · No apps are actually blocked';next.hidden=true;}
+if(state.page==='read'){
+const item=state.item,words=item.body.split(/\s+/).length;
+view.innerHTML=`${context()}${practices[item.id]?practice(item):`<article><div class="f-meta"><span class="f-kicker">${state.category}</span><span>${words<55?'30 sec':'1 min'} read</span></div><h1>${esc(item.work.split(' · ')[0])}</h1><p class="f-edition"><a href="${item.url}" target="_blank" rel="noopener noreferrer">${esc(item.work.includes(' · ')?item.work.split(' · ').slice(1).join(' · '):'View source')}</a></p>${passage(item)}<div class="f-credit"><span>— ${esc(item.author)}${item.edition?`<span>${esc(item.edition)}</span>`:''}</span></div></article>`}<details class="f-optional" ${state.draft?'open':''}><summary>${icon('pen-line')}Add a reflection<span>Optional ${icon('plus')}</span></summary><div class="f-reflection"><label for="f-reflection">${esc(item.prompt)}</label><textarea id="f-reflection" placeholder="What does this bring up for you?">${esc(state.draft)}</textarea>${button(state.saved?'Saved':'Save reflection','save','secondary',!state.draft.trim()||state.saved)}<p id="f-save-result" role="status"></p></div></details><div class="f-grow"></div><div class="f-actions">${button('Return to my day','leave')}${button(a.remaining?`Continue to ${esc(state.app)} · ${Math.min(a.rule.minutes,a.remaining)} min`:'Daily allowance reached','continue','text-button',!a.remaining||state.exited)}</div>`;
+}
+if(state.page==='choose')view.innerHTML=`${context()}<h1>What do you want<br>to lean into?</h1><div class="f-surprise">${button(`${icon('shuffle')} Surprise me`,'surprise')}</div><div class="f-category-list"><p class="f-kicker f-section-label">Read something</p>${Object.keys(icons).map((cat,i)=>`${i===4?'<p class="f-kicker f-section-label">Do something</p>':''}<button class="f-category-row" data-category="${cat}"><span class="f-category-icon">${icon(icons[cat])}</span><span class="f-category-label">${cat}<small>${descriptions[cat]}</small></span>${icon('chevron-right')}</button>`).join('')}</div>`;
+if(state.page==='shield'){
+view.innerHTML=`<div class="f-grow"></div><p class="f-kicker">${esc(state.app)}</p><h1 style="margin-top:13px">${a.remaining?'Before you open.':'That’s your limit<br>for today.'}</h1><div class="f-allowance"><div class="f-allowance-top"><strong>${a.opens} ${a.opens===1?'open':'opens'}</strong><span>today</span></div><div class="f-track" aria-label="${a.allocated} of ${a.rule?.daily||0} minutes allotted"><span style="width:${a.rule?Math.min(100,a.allocated/a.rule.daily*100):0}%"></span></div><p>${a.rule?.apps.length>1?`${esc(a.rule.name)} · ${a.remaining} shared minutes left`:a.remaining?`${Math.ceil(a.remaining/a.rule.minutes)} opens remaining · ${a.remaining} min left`:`${a.rule?.daily||0} min allotted · Resets tomorrow`}</p></div><div class="f-grow"></div>${a.remaining?button('Open Lumity Focus','choose'):''}${button('Return to my day','leave',a.remaining?'text-button':'primary')}`;
+result.textContent='System shield concept · Native layout and counts require device validation';
+}
+if(state.page==='home'){
+view.innerHTML=`<h2>Your limits</h2><p class="f-sub">Set an allowance for an app or a group.</p><div class="f-rule-list">${state.rules.map(r=>{const log=allowance(r.apps[0]);return `<button class="f-rule-row" data-rule="${r.id}"><span class="f-rule-text"><span class="f-rule-title">${esc(r.name)}</span>${r.apps.length>1?`<span class="f-rule-members">${r.apps.map(esc).join(' · ')}</span>`:''}<span class="f-rule-detail">${r.minutes} min / open · ${r.daily} min / day${r.apps.length>1?' shared':''}</span><span class="f-rule-usage">${log.remaining} min left today</span></span>${icon('chevron-right')}</button>`;}).join('')}</div>${button(`${icon('plus')} Add a limit`,'add-rule','secondary')}<div class="f-setting"><label for="f-theme">Appearance</label><select id="f-theme"><option value="light" ${state.appearance==='light'?'selected':''}>Light</option><option value="dark" ${state.appearance==='dark'?'selected':''}>Dark</option></select></div><div class="f-setting">${button(`Saved reflections ${icon('chevron-right')}`,'journal','setting-link')}</div>`;
+}
+if(state.page==='editor'){
+const e=state.editor;
+view.innerHTML=`<button class="f-back" data-action="cancel-editor">${icon('arrow-left')}Your limits</button><h2>${e.id?'Edit limit':'New limit'}</h2><div class="f-segments" role="group" aria-label="Limit type"><button data-mode="app" aria-pressed="${e.mode==='app'}">One app</button><button data-mode="group" aria-pressed="${e.mode==='group'}">App group</button></div>${e.mode==='group'?`<label class="f-field-label" for="f-group-name">Group name</label><input class="f-field" id="f-group-name" value="${esc(e.name)}" maxlength="40">`:''}<p class="f-kicker f-section-label">${e.mode==='group'?'Choose apps':'Choose an app'}</p><div>${apps.map(app=>`<label class="f-app-row"><span>${app}</span><input type="${e.mode==='app'?'radio':'checkbox'}" name="limit-app" data-rule-app="${app}" ${e.apps.includes(app)?'checked':''}></label>`).join('')}</div><p class="f-help">${e.mode==='group'?'These apps share one daily allowance. Each unlock opens only the app you requested.':'This allowance applies only to the selected app.'}</p><p class="f-help" id="f-transfer-note"></p><div class="f-setting"><label for="f-minutes">Time per open</label><span class="f-number"><input id="f-minutes" type="number" min="1" max="1440" step="1" value="${e.minutes}">min</span></div><div class="f-setting"><label for="f-daily">Daily allowance</label><span class="f-number"><input id="f-daily" type="number" min="1" max="1440" step="1" value="${e.daily}">min</span></div><p class="f-error" id="f-setting-error" role="alert" hidden>Choose whole minutes between 1 and 1,440.</p><div class="f-grow"></div>${button('Save limit','save-rule')}`;
+}
+if(state.page==='welcome')view.innerHTML=`<div class="f-grow"></div><p class="f-kicker">Lumity Focus</p><h1 style="margin-top:15px">Give your attention<br>something good.</h1><p class="f-sub">A passage, an idea, or a small reset<br>before the apps you reach for.</p><div class="f-intro-quote">The journey of a thousand li<br>commenced with a single step.</div><p class="f-edition">Laozi · Tao Te Ching</p><div class="f-grow"></div>${button('Get started','permission')}`;
+if(state.page==='permission')view.innerHTML=`<div class="f-grow"></div><p class="f-kicker">Getting started</p><h1 style="margin-top:15px">Connect<br>Screen Time.</h1><p class="f-sub">Allow Lumity Focus to block the apps you choose and apply your daily limits.</p><div class="f-grow"></div>${button('Allow Screen Time access','apps')}`;
+if(state.page==='apps'){
+view.innerHTML=`<h2>Choose your apps</h2><p class="f-sub">Which apps would you like to limit?</p><input id="f-search" class="f-search" type="search" aria-label="Search apps" placeholder="Search apps">${['Instagram','TikTok','YouTube','X','Reddit'].map(app=>`<label class="f-app-row" data-app-row="${app}"><span class="f-app">${app}</span><input type="checkbox" aria-label="Block ${app}" data-app="${app}" ${state.selected.has(app)?'checked':''}></label>`).join('')}<p id="f-no-results" class="f-help" hidden>No matching apps in this preview.</p><div class="f-grow"></div>${button('Save apps','home')}`;result.textContent='Picker approximation · The native app will use Apple’s app picker';
+}
+if(state.page==='journal')view.innerHTML=`<h2>Saved reflections</h2>${state.entries.length?state.entries.slice().reverse().map(e=>`<article class="f-journal"><p class="f-kicker">${e.date} · ${e.category}</p><p>${esc(e.text)}</p><details><summary>View original ${icon('chevron-down')}</summary>${practices[e.item.id]?practice(e.item,e.category):passage(e.item)}<p class="f-edition">${esc(e.item.author)} · ${esc(e.item.work)}</p></details></article>`).join(''):'<p class="f-empty">The reflections you save will live here, alongside the passage or practice.</p>'}`;
+wire();
+}
+function validateEditor(){if(state.page!=='editor')return;const e=state.editor;const validNumbers=[e.minutes,e.daily].every(n=>Number.isInteger(n)&&n>=1&&n<=1440);view.querySelector('[data-action=save-rule]').disabled=!validNumbers||!e.apps.length||(e.mode==='group'&&(e.apps.length<2||!e.name.trim()));view.querySelector('#f-setting-error').hidden=validNumbers;const moved=e.apps.filter(app=>{const r=ruleFor(app);return r&&r.id!==e.id;});view.querySelector('#f-transfer-note').textContent=moved.length?`${moved.join(', ')} will move from existing limits. Today’s allowance already used will carry over.`:'';}
+function wire(){
+view.querySelectorAll('[data-action]').forEach(b=>b.onclick=()=>act(b.dataset.action));view.querySelectorAll('[data-category]').forEach(b=>b.onclick=()=>{if(!allowance().remaining){state.page='shield';render();return;}draw(b.dataset.category);state.page='read';render();});
+const txt=view.querySelector('#f-reflection');if(txt)txt.oninput=()=>{state.draft=txt.value;state.saved=false;const b=view.querySelector('[data-action=save]');b.disabled=!txt.value.trim();b.textContent='Save reflection';};
+view.querySelectorAll('[data-rule]').forEach(b=>b.onclick=()=>beginEditor(b.dataset.rule));
+view.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>{state.editor.mode=b.dataset.mode;if(b.dataset.mode==='app')state.editor.apps=state.editor.apps.slice(0,1);render();});
+view.querySelectorAll('[data-rule-app]').forEach(c=>c.onchange=()=>{const e=state.editor;if(e.mode==='app')e.apps=[c.dataset.ruleApp];else e.apps=c.checked?[...e.apps,c.dataset.ruleApp]:e.apps.filter(a=>a!==c.dataset.ruleApp);validateEditor();});
+const groupName=view.querySelector('#f-group-name');if(groupName)groupName.oninput=()=>{state.editor.name=groupName.value;validateEditor();};
+for(const [id,key] of [['f-minutes','minutes'],['f-daily','daily']]){const el=view.querySelector('#'+id);if(el)el.oninput=()=>{state.editor[key]=Number(el.value);validateEditor();};}
+validateEditor();
+const theme=view.querySelector('#f-theme');if(theme)theme.onchange=()=>{state.appearance=theme.value;render();};
+view.querySelectorAll('[data-app]').forEach(c=>c.onchange=()=>{c.checked?state.selected.add(c.dataset.app):state.selected.delete(c.dataset.app);view.querySelector('[data-action=home]').disabled=!state.selected.size;});
+const search=view.querySelector('#f-search');if(search)search.oninput=()=>{let visible=0;view.querySelectorAll('[data-app-row]').forEach(r=>{r.hidden=!r.dataset.appRow.toLowerCase().includes(search.value.toLowerCase());if(!r.hidden)visible++;});view.querySelector('#f-no-results').hidden=!!visible;};
+if(globalThis.lucide)lucide.createIcons({attrs:{width:17,height:17}});
+}
+function act(action){
+if(action==='home'&&state.page==='apps'){state.rules=state.rules.map(r=>({...r,apps:r.apps.filter(a=>state.selected.has(a))})).filter(r=>r.apps.length);for(const app of state.selected)if(!ruleFor(app))state.rules.push({id:'app-'+app,name:app,apps:[app],minutes:10,daily:30});}
+if(action==='add-rule'){beginEditor();return;}
+if(action==='cancel-editor'){state.editor=null;state.page='home';render();return;}
+if(action==='save-rule'){if(saveRule())render();return;}
+if(action==='save'){if(!state.draft.trim()||state.saved)return;state.entries.push({date:new Date().toLocaleDateString(undefined,{month:'short',day:'numeric'}),category:state.category,item:{...state.item},text:state.draft.trim()});state.saved=true;const b=view.querySelector('[data-action=save]');b.textContent='Saved';b.disabled=true;view.querySelector('#f-save-result').textContent='Saved to your reflections.';return;}
+if(action==='continue'){if(state.exited)return;const minutes=grant();if(!minutes){state.page='shield';render();return;}state.exited=true;render();result.textContent=`Preview exit: ${state.app} would open for ${minutes} minutes. Other apps remain blocked.`;next.textContent="Preview after access expires";next.hidden=false;return;}
+if(action==='leave'){state.exited=true;render();result.textContent=`Preview exit: Focus closes. No new access to ${state.app} is granted.`;next.textContent="Try another opening";next.hidden=false;return;}
+state.exited=false;
+if(action==='surprise'){if(!allowance().remaining){state.page='shield';render();return;}const cats=Object.keys(icons).filter(c=>c!==state.lastCategory);draw(cats[Math.floor(Math.random()*cats.length)]);state.page='read';}else state.page=action;
+render();
+}
+root.querySelector('header [data-action=home]').onclick=()=>act('home');root.querySelector('#appearance').onclick=()=>{state.appearance=state.appearance==='light'?'dark':'light';render();};
+screenPicker.onchange=()=>{const value=screenPicker.value;if(value==='reset'||value==='movement'){state.category=value==='reset'?'Reset':'Movement';state.item=library[state.category][0];state.draft='';state.saved=false;state.page='read';}else{state.page=value;if(value==='read'&&!state.item.url){state.category='Spiritual';state.item=library.Spiritual[0];state.draft='';state.saved=false;}}state.exited=false;render();};appPicker.onchange=()=>{state.app=appPicker.value;state.exited=false;render();};next.onclick=()=>{state.sessions[state.app]=0;state.page='shield';state.exited=false;render();};
+const previewParams=new URLSearchParams(location.search),requestedScreen=previewParams.get('screen');
+if(previewParams.get('embed')==='1')root.classList.add('is-embed');
+if(previewParams.get('theme')==='dark')state.appearance='dark';
+if(apps.includes(previewParams.get('app')))state.app=previewParams.get('app');
+if(requestedScreen==='reset'||requestedScreen==='movement'||requestedScreen==='relationship'||requestedScreen==='entrepreneur'){
+  state.category={reset:'Reset',movement:'Movement',relationship:'Relationships',entrepreneur:'Entrepreneur'}[requestedScreen];
+  state.item=library[state.category][0];state.page='read';
+}else if(['welcome','permission','apps','home','shield','choose','read','journal'].includes(requestedScreen)){
+  state.page=requestedScreen;
+}
+render();
+if(globalThis.Tweak){const tweak=new Tweak({container:root,onChange:render});tweak.addSelect(state,'appearance',{label:'Appearance',options:['light','dark']});}
+})();
+</script>
+
+<script src="https://unpkg.com/@floating-ui/core@1.7.3/dist/floating-ui.core.umd.min.js"></script>
+<script src="https://unpkg.com/@floating-ui/dom@1.7.4/dist/floating-ui.dom.umd.min.js"></script>
+<script>
+(() => {
+  if (window.FloatingUIDOM == null) {
+    return;
+  }
+  const { autoUpdate, computePosition, flip, offset, shift, size } =
+    window.FloatingUIDOM;
+  const tooltipPlacements = new Set(["top", "right", "bottom", "left"]);
+  const tooltipId = `codex-visualization-tooltip-${
+    window.crypto?.randomUUID?.() ?? Date.now().toString(36)
+  }`;
+  const tooltipGap = 5;
+  const hoverDelay = 700;
+  const skipDelay = 300;
+  let activeTrigger = null;
+  let pendingTrigger = null;
+  let tooltip = null;
+  let openTimeout = null;
+  let autoUpdateCleanup = null;
+  let positionRequest = 0;
+  let skipDelayUntil = 0;
+  let lastPointerWasTouch = false;
+  let pinnedByTouch = false;
+
+  const getTrigger = (target) =>
+    target?.nodeType === Node.ELEMENT_NODE
+      ? target.closest("[data-tooltip]")
+      : null;
+  const containsTarget = (trigger, target) =>
+    target?.nodeType != null && trigger.contains(target);
+  const getContent = (trigger) =>
+    trigger.getAttribute("data-tooltip")?.trim() ?? "";
+  const getPlacement = (trigger) => {
+    const placement = trigger.getAttribute("data-tooltip-placement");
+    return tooltipPlacements.has(placement) ? placement : "top";
+  };
+  const getTooltip = () => {
+    if (tooltip == null) {
+      tooltip = document.createElement("div");
+      tooltip.id = tooltipId;
+      tooltip.className = "tooltip";
+      tooltip.setAttribute("role", "tooltip");
+    }
+    return tooltip;
+  };
+  const setDescribedBy = (trigger, described) => {
+    const ids = new Set(
+      (trigger.getAttribute("aria-describedby") ?? "")
+        .split(/\s+/)
+        .filter(Boolean),
+    );
+    if (described) {
+      ids.add(tooltipId);
+    } else {
+      ids.delete(tooltipId);
+    }
+    if (ids.size === 0) {
+      trigger.removeAttribute("aria-describedby");
+    } else {
+      trigger.setAttribute("aria-describedby", [...ids].join(" "));
+    }
+  };
+  const clearOpenTimeout = () => {
+    if (openTimeout != null) {
+      window.clearTimeout(openTimeout);
+      openTimeout = null;
+    }
+    pendingTrigger = null;
+  };
+  const closeTooltip = (activateSkipDelay = true) => {
+    clearOpenTimeout();
+    pinnedByTouch = false;
+    positionRequest += 1;
+    autoUpdateCleanup?.();
+    autoUpdateCleanup = null;
+    if (activeTrigger == null) {
+      return;
+    }
+    setDescribedBy(activeTrigger, false);
+    activeTrigger = null;
+    tooltip?.remove();
+    if (activateSkipDelay) {
+      skipDelayUntil = Date.now() + skipDelay;
+    }
+  };
+  const updatePosition = (trigger, floating) => {
+    const request = ++positionRequest;
+    void computePosition(trigger, floating, {
+      middleware: [
+        offset(tooltipGap),
+        flip({ padding: tooltipGap }),
+        shift({ padding: tooltipGap }),
+        size({
+          padding: tooltipGap,
+          apply({ availableHeight, availableWidth, elements }) {
+            elements.floating.style.setProperty(
+              "--tooltip-available-width",
+              `${Math.max(0, availableWidth)}px`,
+            );
+            elements.floating.style.setProperty(
+              "--tooltip-available-height",
+              `${Math.max(0, availableHeight)}px`,
+            );
+          },
+        }),
+      ],
+      placement: getPlacement(trigger),
+      strategy: "fixed",
+    })
+      .then(({ x, y }) => {
+        if (activeTrigger !== trigger || request !== positionRequest) {
+          return;
+        }
+        const scale = window.devicePixelRatio || 1;
+        floating.style.transform = `translate(${Math.round(x * scale) / scale}px, ${Math.round(y * scale) / scale}px)`;
+        floating.style.visibility = "visible";
+      })
+      .catch(() => {
+        if (activeTrigger === trigger && request === positionRequest) {
+          closeTooltip(false);
+        }
+      });
+  };
+  const openTooltip = (trigger) => {
+    const content = getContent(trigger);
+    if (!trigger.isConnected || content.length === 0) {
+      return;
+    }
+    clearOpenTimeout();
+    if (activeTrigger === trigger) {
+      return;
+    }
+    closeTooltip();
+    const floating = getTooltip();
+    floating.textContent = content;
+    floating.style.visibility = "hidden";
+    floating.style.transform = "translate(0, 0)";
+    document.body.appendChild(floating);
+    activeTrigger = trigger;
+    setDescribedBy(trigger, true);
+    autoUpdateCleanup = autoUpdate(trigger, floating, () => {
+      updatePosition(trigger, floating);
+    });
+  };
+  const requestOpen = (trigger, immediate = false) => {
+    if (
+      getContent(trigger).length === 0 ||
+      activeTrigger === trigger ||
+      pendingTrigger === trigger
+    ) {
+      return;
+    }
+    clearOpenTimeout();
+    pendingTrigger = trigger;
+    const delay =
+      immediate || activeTrigger != null || Date.now() < skipDelayUntil
+        ? 0
+        : hoverDelay;
+    if (delay === 0) {
+      openTooltip(trigger);
+      return;
+    }
+    openTimeout = window.setTimeout(() => {
+      openTimeout = null;
+      pendingTrigger = null;
+      openTooltip(trigger);
+    }, delay);
+  };
+  const handlePointerOpen = (event) => {
+    if (event.pointerType === "touch") {
+      return;
+    }
+    const trigger = getTrigger(event.target);
+    if (trigger == null || containsTarget(trigger, event.relatedTarget)) {
+      return;
+    }
+    requestOpen(trigger);
+  };
+  const handlePointer = (event) => {
+    lastPointerWasTouch =
+      event.type === "pointerdown" && event.pointerType === "touch";
+  };
+  const handleTouchClick = (event) => {
+    const isTouch = event.pointerType === "touch" || lastPointerWasTouch;
+    lastPointerWasTouch = false;
+    if (!isTouch || event.detail === 0) {
+      return;
+    }
+    const trigger = getTrigger(event.target);
+    if (
+      trigger == null ||
+      !trigger.isConnected ||
+      getContent(trigger).length === 0 ||
+      (pinnedByTouch && activeTrigger === trigger)
+    ) {
+      if (pinnedByTouch) {
+        closeTooltip();
+      }
+      return;
+    }
+    openTooltip(trigger);
+    pinnedByTouch = activeTrigger === trigger;
+    window.setTimeout(() => {
+      if (activeTrigger === trigger && !trigger.isConnected) {
+        closeTooltip(false);
+      }
+    }, 0);
+  };
+  const handleLeave = (event) => {
+    if (pinnedByTouch) {
+      return;
+    }
+    const trigger = getTrigger(event.target);
+    if (trigger == null || containsTarget(trigger, event.relatedTarget)) {
+      return;
+    }
+    if (activeTrigger === trigger || pendingTrigger === trigger) {
+      closeTooltip();
+    }
+  };
+  const handleFocusIn = (event) => {
+    const trigger = getTrigger(event.target);
+    if (trigger?.matches(":focus-visible")) {
+      requestOpen(trigger, true);
+    }
+  };
+  const handleKeyDown = (event) => {
+    if (event.key === "Escape") {
+      closeTooltip();
+    }
+  };
+  const handleContextMenu = (event) => {
+    lastPointerWasTouch = false;
+    const trigger = getTrigger(event.target);
+    if (activeTrigger === trigger || pendingTrigger === trigger) {
+      closeTooltip();
+    }
+  };
+  const destroy = () => {
+    closeTooltip(false);
+    lastPointerWasTouch = false;
+    document.removeEventListener("pointerover", handlePointerOpen);
+    document.removeEventListener("pointerdown", handlePointer);
+    document.removeEventListener("pointercancel", handlePointer);
+    document.removeEventListener("click", handleTouchClick);
+    document.removeEventListener("pointerout", handleLeave);
+    document.removeEventListener("focusin", handleFocusIn);
+    document.removeEventListener("focusout", handleLeave);
+    document.removeEventListener("keydown", handleKeyDown);
+    document.removeEventListener("contextmenu", handleContextMenu);
+    tooltip = null;
+  };
+
+  document.addEventListener("pointerover", handlePointerOpen);
+  document.addEventListener("pointerdown", handlePointer);
+  document.addEventListener("pointercancel", handlePointer);
+  document.addEventListener("click", handleTouchClick);
+  document.addEventListener("pointerout", handleLeave);
+  document.addEventListener("focusin", handleFocusIn);
+  document.addEventListener("focusout", handleLeave);
+  document.addEventListener("keydown", handleKeyDown);
+  document.addEventListener("contextmenu", handleContextMenu);
+  window.addEventListener("pagehide", destroy, { once: true });
+})();
+</script>
+<script id="codex-visualization-tabs">
+(() => {
+  const selector = '.nav[role="tablist"] [role="tab"]';
+  const disabled = ':disabled,[aria-disabled="true"]';
+  const selectTab = (selected) => {
+    const panelId = selected.getAttribute("aria-controls");
+    for (const tab of selected.closest('[role="tablist"]').querySelectorAll('[role="tab"]')) {
+      const active = tab === selected;
+      tab.classList.toggle("active", active);
+      tab.setAttribute("aria-selected", String(active));
+      const id = tab.getAttribute("aria-controls");
+      const panel = id && document.getElementById(id);
+      if (panel != null) {
+        panel.hidden = id !== panelId;
+        if (!panel.hidden && selected.id) {
+          panel.setAttribute("aria-labelledby", selected.id);
+        }
+      }
+    }
+  };
+  const interact = (event) => {
+    const tab = event.target?.closest?.(selector);
+    if (event.defaultPrevented || tab == null || tab.matches(disabled)) {
+      return;
+    }
+    if (event.type === "click") {
+      selectTab(tab);
+      return;
+    }
+    const tabs = Array.from(
+      tab.closest('[role="tablist"]').querySelectorAll('[role="tab"]'),
+    ).filter((candidate) => !candidate.matches(disabled));
+    const current = tabs.indexOf(tab);
+    let next;
+    if (event.key === "ArrowRight" || event.key === "ArrowDown") {
+      next = (current + 1) % tabs.length;
+    } else if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
+      next = (current + tabs.length - 1) % tabs.length;
+    } else if (event.key === "Home") {
+      next = 0;
+    } else if (event.key === "End") {
+      next = tabs.length - 1;
+    } else {
+      return;
+    }
+    event.preventDefault();
+    tabs[next].focus();
+    selectTab(tabs[next]);
+  };
+
+  for (const list of document.querySelectorAll('.nav[role="tablist"]')) {
+    const selected =
+      list.querySelector('[role="tab"][aria-selected="true"]') ??
+      list.querySelector('[role="tab"].active') ??
+      list.querySelector('[role="tab"]');
+    if (selected != null) {
+      selectTab(selected);
+    }
+  }
+  document.addEventListener("click", interact);
+  document.addEventListener("keydown", interact);
+  window.addEventListener("pagehide", () => {
+    document.removeEventListener("click", interact);
+    document.removeEventListener("keydown", interact);
+  }, { once: true });
+})();
+</script>
+<script id="codex-visualization-lucide" async src="https://unpkg.com/lucide@1.17.0/dist/umd/lucide.js"></script>
+<script>
+(() => {
+  const initialize = () => {
+    globalThis.lucide?.createIcons({ attrs: { width: 16, height: 16 } });
+  };
+  if (globalThis.lucide != null) {
+    initialize();
+    return;
+  }
+  document
+    .getElementById("codex-visualization-lucide")
+    ?.addEventListener("load", initialize, { once: true });
+})();
+</script>
+
+</body>
+</html>
