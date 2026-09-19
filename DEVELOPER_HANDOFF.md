@@ -10,7 +10,7 @@
 6. Lumity Focus presents one passage, video, or direct action.
 7. The user either returns to their day or unlocks only the triggering app for the configured session.
 
-There is no separate completion screen between the content and those two primary outcomes. A video excerpt may also offer a lower-emphasis `Continue watching here` action that resumes the same source inside Lumity Focus.
+There is no separate completion screen between the content and those two primary outcomes. When a video excerpt ends, the player remains on screen; pressing play resumes the same source inside Lumity Focus.
 
 ## Required v1 behavior
 
@@ -39,10 +39,10 @@ Entrepreneur targets fifteen text passages and fifteen 60–120 second video cli
 - Store the YouTube video ID, `startSeconds`, `endSeconds`, creator, title, and complete source URL with each selected excerpt.
 - Play the selected window through the official YouTube IFrame Player API. Do not download, screen-record, edit, or re-upload the source video.
 - Keep the standard YouTube player, branding, controls, captions, advertisements, and links intact.
-- When the selected window reaches `endSeconds`, treat the excerpt as finished and show the two primary Lumity outcomes outside the player.
-- Also show a visually secondary `Continue watching here` action. It reloads the same video from `endSeconds` without another end boundary, so the user can watch the remainder inside Lumity Focus without entering YouTube's home feed or search experience.
+- When the selected window reaches `endSeconds`, cue the same video at that endpoint without another end boundary. The player stays paused on screen, and its standard play control continues the full source inside Lumity Focus without entering YouTube's home feed or search experience.
+- Do not add a separate `Continue watching here` button or repeat creator and show labels beneath the player. The YouTube player already carries the source identity.
 - Continuing the full source does not unlock or consume time from the originally requested blocked app. The two primary Lumity outcomes remain available when the user stops or finishes watching.
-- Keep a separate `View full source on YouTube` link for attribution and user choice. If embedding is unavailable, use that link as the fallback.
+- Keep one quiet `Full source on YouTube` link beneath the player for attribution and user choice. If embedding is unavailable, use that link as the fallback.
 
 ## Native feasibility gates
 
