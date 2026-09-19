@@ -1026,7 +1026,7 @@ html>body{padding:0}</style>
 <body>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Source+Serif+4:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 <div id="focus-four" data-appearance="light" aria-label="Lumity Focus light-first design">
-  <div class="preview-controls"><label>Screen <select id="preview-screen"><option value="read">Passage</option><option value="reset">Reset instructions</option><option value="movement">Movement instructions</option><option value="choose">Choose a direction</option><option value="shield">Blocked app</option><option value="home">Home & limits</option><option value="welcome">Welcome</option><option value="permission">Screen Time access</option><option value="apps">Choose apps</option><option value="journal">Saved reflections</option></select></label><label>App <select id="preview-app"><option>Instagram</option><option>TikTok</option><option>X</option><option>YouTube</option></select></label></div>
+  <div class="preview-controls"><label>Screen <select id="preview-screen"><option value="read">Passage</option><option value="video">Video excerpt</option><option value="video-end">Video excerpt finished</option><option value="reset">Reset instructions</option><option value="movement">Movement instructions</option><option value="choose">Choose a direction</option><option value="shield">Blocked app</option><option value="home">Home & limits</option><option value="welcome">Welcome</option><option value="permission">Screen Time access</option><option value="apps">Choose apps</option><option value="journal">Saved reflections</option></select></label><label>App <select id="preview-app"><option>Instagram</option><option>TikTok</option><option>X</option><option>YouTube</option></select></label></div>
   <div class="f-phone">
     <div class="f-status"><span>9:41</span><span aria-label="Signal and battery">●●● &nbsp; ▰</span></div>
     <header><button class="f-brand" data-action="home" aria-label="Lumity Focus settings">Lumity <span>Focus</span></button><button class="f-icon" id="appearance" aria-label="Switch to dark appearance"><i data-lucide="moon" aria-hidden="true"></i></button></header>
@@ -1158,6 +1158,49 @@ html>body{padding:0}</style>
 #focus-four input[type=radio] { width: 18px; height: 18px; accent-color: var(--f-accent); }
 #focus-four .f-rule-row:focus-visible,
 #focus-four .f-category-row:focus-visible { outline-offset: 4px; }
+#focus-four .f-video-heading { margin-bottom: 18px; }
+#focus-four .f-video-heading h1 { margin-top: 8px; }
+#focus-four .f-video-frame {
+  position: relative; overflow: hidden; aspect-ratio: 16 / 9; border-radius: 13px;
+  background: linear-gradient(145deg, #10162f 0%, #202b64 54%, #4338ca 100%);
+  color: #fff; box-shadow: inset 0 0 0 1px rgba(255,255,255,.12);
+}
+#focus-four .f-video-frame::before {
+  content: ""; position: absolute; inset: 0;
+  background: radial-gradient(circle at 28% 30%, rgba(174,190,255,.28), transparent 34%),
+              linear-gradient(180deg, transparent 38%, rgba(5,8,20,.72) 100%);
+}
+#focus-four .f-video-source {
+  position: absolute; z-index: 1; top: 13px; left: 14px; right: 14px;
+  display: flex; justify-content: space-between; gap: 12px; align-items: center;
+  font-size: 10px; letter-spacing: .2px; color: rgba(255,255,255,.86);
+}
+#focus-four .f-video-source strong { font-weight: 500; }
+#focus-four .f-youtube-mark { display: inline-flex; align-items: center; gap: 5px; font-weight: 500; }
+#focus-four .f-youtube-dot { width: 17px; height: 12px; display: grid; place-items: center; border-radius: 4px; background: #ff0033; }
+#focus-four .f-youtube-dot::after { content: ""; width: 0; height: 0; margin-left: 1px; border-top: 3px solid transparent; border-bottom: 3px solid transparent; border-left: 5px solid #fff; }
+#focus-four .f-video-center {
+  position: absolute; z-index: 1; inset: 0; display: grid; place-items: center; text-align: center;
+}
+#focus-four .f-video-play {
+  width: 54px; height: 54px; display: grid; place-items: center; border: 1px solid rgba(255,255,255,.55);
+  border-radius: 50%; background: rgba(7,10,28,.42); color: #fff; backdrop-filter: blur(8px);
+}
+#focus-four .f-video-ended { padding: 0 34px; }
+#focus-four .f-video-ended strong { display: block; font-size: 17px; font-weight: 500; }
+#focus-four .f-video-ended span { display: block; margin-top: 5px; color: rgba(255,255,255,.75); font-size: 11px; }
+#focus-four .f-video-bottom { position: absolute; z-index: 1; left: 14px; right: 14px; bottom: 12px; }
+#focus-four .f-video-time { display: flex; justify-content: space-between; font-size: 10px; color: rgba(255,255,255,.86); margin-bottom: 7px; }
+#focus-four .f-video-progress { height: 3px; background: rgba(255,255,255,.28); border-radius: 3px; overflow: hidden; }
+#focus-four .f-video-progress span { display: block; width: 73%; height: 100%; background: #fff; }
+#focus-four .f-video-frame.is-ended .f-video-progress span { width: 100%; }
+#focus-four .f-video-details { padding: 17px 0 18px; border-bottom: 1px solid var(--f-rule); }
+#focus-four .f-video-details strong { display: block; font-size: var(--f-type-label); font-weight: 500; }
+#focus-four .f-video-details p { margin-top: 5px; color: var(--f-secondary); font-size: var(--f-type-meta); }
+#focus-four .f-video-details a { display: inline-flex; align-items: center; gap: 6px; margin-top: 10px; color: var(--f-secondary); font-size: var(--f-type-meta); text-underline-offset: 4px; }
+#focus-four .f-continue-source { margin: 18px 0 4px; }
+#focus-four .f-continue-source .f-secondary { min-height: 52px; }
+#focus-four .f-continue-note { margin: 8px 0 0; text-align: center; color: var(--f-muted); font-size: var(--f-type-meta); }
 @media (prefers-reduced-motion: no-preference) {
   #focus-four button { transition: background-color 120ms ease, border-color 120ms ease; }
 }
@@ -1230,12 +1273,19 @@ return item.body.match(/[^.!?]+(?:[.!?][”"]?|$)/g)?.map(p=>p.trim()).filter(Bo
 function passage(item){return `<div class="f-passages">${paragraphs(item).map(p=>`<p>${esc(p).replace(/\n/g,'<br>')}</p>`).join('')}</div>`;}
 function practice(item,category=state.category){const p=practices[item.id];return `<article class="f-practice"><div class="f-meta"><span class="f-kicker">${category}</span><span>${p.duration}</span></div><h1>${esc(p.instruction)}</h1>${p.alternative?`<p class="f-practice-note"><strong>Alternative:</strong> ${esc(p.alternative)}</p>`:''}</article>`;}
 function render(){
-refreshDay();root.dataset.appearance=state.appearance;screenPicker.value=state.page==='editor'?'home':state.page==='read'&&state.category==='Reset'?'reset':state.page==='read'&&state.category==='Movement'?'movement':state.page;appPicker.value=state.app;const a=allowance();
+refreshDay();root.dataset.appearance=state.appearance;screenPicker.value=state.page==='editor'?'home':state.page==='video-full'?'video':state.page==='read'&&state.category==='Reset'?'reset':state.page==='read'&&state.category==='Movement'?'movement':state.page;appPicker.value=state.app;const a=allowance();
 root.querySelector('#appearance').innerHTML=icon(state.appearance==='light'?'moon':'sun');root.querySelector('#appearance').setAttribute('aria-label',`Switch to ${state.appearance==='light'?'dark':'light'} appearance`);
 if(!state.exited){result.textContent='Design preview · Sample daily counts · No apps are actually blocked';next.hidden=true;}
 if(state.page==='read'){
 const item=state.item,words=item.body.split(/\s+/).length;
 view.innerHTML=`${context()}${practices[item.id]?practice(item):`<article><div class="f-meta"><span class="f-kicker">${state.category}</span><span>${words<55?'30 sec':'1 min'} read</span></div><h1>${esc(item.work.split(' · ')[0])}</h1><p class="f-edition"><a href="${item.url}" target="_blank" rel="noopener noreferrer">${esc(item.work.includes(' · ')?item.work.split(' · ').slice(1).join(' · '):'View source')}</a></p>${passage(item)}<div class="f-credit"><span>— ${esc(item.author)}${item.edition?`<span>${esc(item.edition)}</span>`:''}</span></div></article>`}<details class="f-optional" ${state.draft?'open':''}><summary>${icon('pen-line')}Add a reflection<span>Optional ${icon('plus')}</span></summary><div class="f-reflection"><label for="f-reflection">${esc(item.prompt)}</label><textarea id="f-reflection" placeholder="What does this bring up for you?">${esc(state.draft)}</textarea>${button(state.saved?'Saved':'Save reflection','save','secondary',!state.draft.trim()||state.saved)}<p id="f-save-result" role="status"></p></div></details><div class="f-grow"></div><div class="f-actions">${button('Return to my day','leave')}${button(a.remaining?`Continue to ${esc(state.app)} · ${Math.min(a.rule.minutes,a.remaining)} min`:'Daily allowance reached','continue','text-button',!a.remaining||state.exited)}</div>`;
+}
+if(state.page==='video'||state.page==='video-full'){
+const full=state.page==='video-full';
+view.innerHTML=`${context()}<article><div class="f-video-heading"><div class="f-meta"><span class="f-kicker">Entrepreneur · Video</span><span>${full?'Full source':'1 min 30 sec excerpt'}</span></div><h1>${full?'Watching the full source':'Selected excerpt'}</h1></div><div class="f-video-frame"><div class="f-video-source"><strong>Example source treatment</strong><span class="f-youtube-mark"><span class="f-youtube-dot"></span>YouTube</span></div><div class="f-video-center"><button class="f-video-play" data-action="${full?'finish-full-video':'finish-video'}" aria-label="${full?'Finish full source preview':'Preview the excerpt ending'}">${icon('pause')}</button></div><div class="f-video-bottom"><div class="f-video-time"><span>${full?'20:43':'19:45'}</span><span>${full?'1:02:14':'20:12'}</span></div><div class="f-video-progress"><span style="width:${full?'34%':'73%'}"></span></div></div></div><div class="f-video-details"><strong>David Senra · Founders</strong><p>${full?'Continuing from the selected excerpt':'Excerpt timing and title will come from the content catalog'}</p><a href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer">View full source on YouTube ${icon('external-link')}</a></div></article><div class="f-grow"></div><div class="f-actions">${button('Return to my day','leave')}${button(a.remaining?`Continue to ${esc(state.app)} · ${Math.min(a.rule.minutes,a.remaining)} min`:'Daily allowance reached','continue','text-button',!a.remaining||state.exited)}</div>`;
+}
+if(state.page==='video-end'){
+view.innerHTML=`${context()}<article><div class="f-video-heading"><div class="f-meta"><span class="f-kicker">Entrepreneur · Video</span><span>1 min 30 sec excerpt</span></div><h1>Selected excerpt</h1></div><div class="f-video-frame is-ended"><div class="f-video-source"><strong>Example source treatment</strong><span class="f-youtube-mark"><span class="f-youtube-dot"></span>YouTube</span></div><div class="f-video-center"><div class="f-video-ended"><strong>Excerpt complete</strong><span>The full video continues from 20:12</span></div></div><div class="f-video-bottom"><div class="f-video-time"><span>18:42</span><span>20:12</span></div><div class="f-video-progress"><span></span></div></div></div><div class="f-video-details"><strong>David Senra · Founders</strong><p>Watching more keeps ${esc(state.app)} blocked.</p><a href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer">View full source on YouTube ${icon('external-link')}</a></div><div class="f-continue-source">${button(`${icon('play')} Continue watching here`,'continue-source','secondary')}<p class="f-continue-note">Continue from 20:12 inside Lumity Focus</p></div></article><div class="f-grow"></div><div class="f-actions">${button('Return to my day','leave')}${button(a.remaining?`Continue to ${esc(state.app)} · ${Math.min(a.rule.minutes,a.remaining)} min`:'Daily allowance reached','continue','text-button',!a.remaining||state.exited)}</div>`;
 }
 if(state.page==='choose')view.innerHTML=`${context()}<h1>What do you want<br>to lean into?</h1><div class="f-surprise">${button(`${icon('shuffle')} Surprise me`,'surprise')}</div><div class="f-category-list"><p class="f-kicker f-section-label">Read something</p>${Object.keys(icons).map((cat,i)=>`${i===4?'<p class="f-kicker f-section-label">Do something</p>':''}<button class="f-category-row" data-category="${cat}"><span class="f-category-icon">${icon(icons[cat])}</span><span class="f-category-label">${cat}<small>${descriptions[cat]}</small></span>${icon('chevron-right')}</button>`).join('')}</div>`;
 if(state.page==='shield'){
@@ -1274,6 +1324,9 @@ if(globalThis.lucide)lucide.createIcons({attrs:{width:17,height:17}});
 }
 function act(action){
 if(action==='home'&&state.page==='apps'){state.rules=state.rules.map(r=>({...r,apps:r.apps.filter(a=>state.selected.has(a))})).filter(r=>r.apps.length);for(const app of state.selected)if(!ruleFor(app))state.rules.push({id:'app-'+app,name:app,apps:[app],minutes:10,daily:30});}
+if(action==='finish-video'){state.page='video-end';render();return;}
+if(action==='continue-source'){state.page='video-full';render();return;}
+if(action==='finish-full-video'){result.textContent='Full source remains inside Lumity Focus. The blocked app is still locked.';return;}
 if(action==='add-rule'){beginEditor();return;}
 if(action==='cancel-editor'){state.editor=null;state.page='home';render();return;}
 if(action==='save-rule'){if(saveRule())render();return;}
@@ -1293,7 +1346,7 @@ if(apps.includes(previewParams.get('app')))state.app=previewParams.get('app');
 if(requestedScreen==='reset'||requestedScreen==='movement'||requestedScreen==='relationship'||requestedScreen==='entrepreneur'){
   state.category={reset:'Reset',movement:'Movement',relationship:'Relationships',entrepreneur:'Entrepreneur'}[requestedScreen];
   state.item=library[state.category][0];state.page='read';
-}else if(['welcome','permission','apps','home','shield','choose','read','journal'].includes(requestedScreen)){
+}else if(['welcome','permission','apps','home','shield','choose','read','video','video-end','journal'].includes(requestedScreen)){
   state.page=requestedScreen;
 }
 render();
