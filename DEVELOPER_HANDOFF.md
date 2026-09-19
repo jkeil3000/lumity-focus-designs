@@ -38,6 +38,7 @@ Entrepreneur targets fifteen text passages and fifteen 60–120 second video cli
 
 - Store the YouTube video ID, `startSeconds`, `endSeconds`, creator, title, and complete source URL with each selected excerpt.
 - Play the selected window through the official YouTube IFrame Player API. Do not download, screen-record, edit, or re-upload the source video.
+- YouTube requires an `HTTP Referer` or equivalent client identity. In the iOS `WKWebView`, load bundled player HTML with a real `baseURL` or load the embed request with the app identity in the `Referer` header. Missing identity produces YouTube error 153 and blocked playback.
 - Keep the standard YouTube player, branding, controls, captions, advertisements, and links intact.
 - When the selected window reaches `endSeconds`, cue the same video at that endpoint without another end boundary. The player stays paused on screen, and its standard play control continues the full source inside Lumity Focus without entering YouTube's home feed or search experience.
 - Do not add a separate `Continue watching here` button or repeat creator and show labels beneath the player. The YouTube player already carries the source identity.
@@ -53,6 +54,7 @@ Before implementing the full interface, build a small iOS proof for:
 3. Enforcing a ten-minute wall-clock session across backgrounding, force quit, reboot, and overlapping sessions.
 4. Persisting per-app and group usage through an App Group without resetting usage when apps are regrouped.
 5. Confirming the Family Controls entitlement and extension setup required for distribution.
+6. Playing a YouTube excerpt in the production `WKWebView` with the required Referer/client identity, then resuming the same video from the excerpt endpoint.
 
 Apple's documented 15-minute minimum DeviceActivity monitoring interval means a ten-minute session must be validated with a supported mechanism before the app architecture is treated as settled.
 
