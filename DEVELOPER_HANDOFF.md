@@ -10,7 +10,7 @@
 6. Lumity Focus presents one passage, video, or direct action.
 7. The user either returns to their day or unlocks only the triggering app for the configured session.
 
-There is no completion screen between the content and those two outcomes.
+There is no separate completion screen between the content and those two primary outcomes. A video excerpt may also offer a lower-emphasis `Continue watching here` action that resumes the same source inside Lumity Focus.
 
 ## Required v1 behavior
 
@@ -33,6 +33,16 @@ Reading content must be copied verbatim from the attributed external source. It 
 Reset, Relationships, and Movement each use ten finite direct instructions from the live content catalog. Present the instruction itself with an optional accessibility alternative. Do not transform an instruction into a multi-step coaching sequence.
 
 Entrepreneur targets fifteen text passages and fifteen 60–120 second video clips. Use an official embed when available and provide a link to the complete source.
+
+## YouTube excerpt behavior
+
+- Store the YouTube video ID, `startSeconds`, `endSeconds`, creator, title, and complete source URL with each selected excerpt.
+- Play the selected window through the official YouTube IFrame Player API. Do not download, screen-record, edit, or re-upload the source video.
+- Keep the standard YouTube player, branding, controls, captions, advertisements, and links intact.
+- When the selected window reaches `endSeconds`, treat the excerpt as finished and show the two primary Lumity outcomes outside the player.
+- Also show a visually secondary `Continue watching here` action. It reloads the same video from `endSeconds` without another end boundary, so the user can watch the remainder inside Lumity Focus without entering YouTube's home feed or search experience.
+- Continuing the full source does not unlock or consume time from the originally requested blocked app. The two primary Lumity outcomes remain available when the user stops or finishes watching.
+- Keep a separate `View full source on YouTube` link for attribution and user choice. If embedding is unavailable, use that link as the fallback.
 
 ## Native feasibility gates
 
